@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ui_task/pivotTable.dart';
+import 'Api_Services/api.dart';
+import 'Modal/technical_modal.dart';
 import 'Oscillator_table.dart';
 import 'averages&oscillators.dart';
 import 'exponential.dart';
@@ -22,11 +24,24 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  // MyHomePage(this.json);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late Future<Welcome> json;
+  // late Welcome welcome;
+
+  @override
+  void initState() {
+    super.initState();
+    json = ApiServices.fetchInfo();
+    print(json);
+    // welcome = Welcome.fromJson(json);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Column(
                     children: [
-                      Container2(text: '1 MIN', color: Colors.white),
+                      Container2(text: '15 Min', color: Colors.white),
                       Container2(text: '5 MIN', color: Colors.grey),
                       Container2(text: '15 MIN', color: Colors.grey),
                       Container2(text: '30 MIN', color: Colors.grey),
@@ -146,31 +161,59 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               SizedBox(height: 35),
-              AveragesAndOsillators(
-                heading: 'Moving Averages',
-                boxText: 'BUY',
-                buy: '7',
-                neutral: '-',
-                sell: '5',
-                boxColor: Colors.blue,
-                boxWidth: 40,
+              FutureBuilder<Welcome>(
+                future: json,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return AveragesAndOsillators(
+                      heading: 'Moving Averages',
+                      boxText: 'BUY',
+                      buy: snapshot.data!.the15Min.movingAverages.buy,
+                      neutral:
+                          snapshot.data!.the15Min.movingAverages.Text1 == 'null'
+                              ? '-'
+                              : snapshot.data!.the15Min.movingAverages.Text1,
+                      sell: snapshot.data!.the15Min.movingAverages.sell,
+                      boxColor: Colors.blue,
+                      boxWidth: 40,
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  }
+
+                  // By default, show a loading spinner.
+                  return Text('Loading.....');
+                },
               ),
               SizedBox(height: 10),
-              Exponential(),
+              Exponential1(),
               SizedBox(height: 30),
-              AveragesAndOsillators(
-                heading: 'Oscillators',
-                boxText: 'STRONG SELL',
-                buy: '1',
-                neutral: '1',
-                sell: '9',
-                boxColor: Colors.red,
-                boxWidth: 75,
+              FutureBuilder<Welcome>(
+                future: json,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return AveragesAndOsillators(
+                      heading: 'Oscillators',
+                      boxText: 'STRONG SELL',
+                      buy: snapshot.data!.the15Min.technicalIndicator.buy,
+                      neutral:
+                          snapshot.data!.the15Min.technicalIndicator.neutral,
+                      sell: snapshot.data!.the15Min.technicalIndicator.sell,
+                      boxColor: Colors.red,
+                      boxWidth: 75,
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  }
+
+                  // By default, show a loading spinner.
+                  return Text('Loading.....');
+                },
               ),
               SizedBox(height: 10),
               TableForOscillators(),
               SizedBox(height: 20),
-              PivotPoints(),
+              PivotPoints1(),
               SizedBox(height: 30),
               SizedBox(
                 height: 10,

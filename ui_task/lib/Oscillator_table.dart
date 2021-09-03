@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:ui_task/Api_Services/api.dart';
 import 'package:ui_task/rows.dart';
 
-class TableForOscillators extends StatelessWidget {
+import 'Modal/technical_modal.dart';
+
+class TableForOscillators extends StatefulWidget {
   const TableForOscillators({
     Key? key,
   }) : super(key: key);
+
+  @override
+  _TableForOscillatorsState createState() => _TableForOscillatorsState();
+}
+
+class _TableForOscillatorsState extends State<TableForOscillators> {
+  late Future<Welcome> json;
+
+  @override
+  void initState() {
+    super.initState();
+    json = ApiServices.fetchInfo();
+    // welcome = Welcome.fromJson(json);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,68 +57,37 @@ class TableForOscillators extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.9),
         ),
         SizedBox(height: 10),
-        RowForExponentialAndOscillators(
-            periodColor: Colors.grey,
-            period: 'RSI(14)',
-            value: '-53.6549',
-            type: 'NEUTRAL',
-            typeColor: Colors.orangeAccent),
-        SizedBox(height: 10),
-        RowForExponentialAndOscillators(
-            periodColor: Colors.grey,
-            period: 'CCI(20)',
-            value: '-53.6549',
-            type: 'SELL',
-            typeColor: Colors.red),
-        SizedBox(height: 10),
-        RowForExponentialAndOscillators(
-            periodColor: Colors.grey,
-            period: 'ADI(14)',
-            value: '-53.6549',
-            type: 'BUY',
-            typeColor: Colors.blue),
-        SizedBox(height: 10),
-        RowForExponentialAndOscillators(
-            periodColor: Colors.grey,
-            period: 'Awesome \n Oscillator',
-            value: '-53.6549',
-            type: 'SELL',
-            typeColor: Colors.red),
-        SizedBox(height: 10),
-        RowForExponentialAndOscillators(
-            periodColor: Colors.grey,
-            period: 'Momentum (10)',
-            value: '-53.6549',
-            type: 'SELL',
-            typeColor: Colors.red),
-        SizedBox(height: 10),
-        RowForExponentialAndOscillators(
-            periodColor: Colors.grey,
-            period: 'Stochastic RSI \n Fast (3,3,14,14)',
-            value: '-53.6549',
-            type: 'SELL',
-            typeColor: Colors.red),
-        SizedBox(height: 10),
-        RowForExponentialAndOscillators(
-            periodColor: Colors.grey,
-            period: 'Williams %R \n (14)',
-            value: '-53.6549',
-            type: 'SELL',
-            typeColor: Colors.red),
-        SizedBox(height: 10),
-        RowForExponentialAndOscillators(
-            periodColor: Colors.grey,
-            period: 'Bull Bear \n Power',
-            value: '-53.6549',
-            type: 'SELL',
-            typeColor: Colors.red),
-        SizedBox(height: 10),
-        RowForExponentialAndOscillators(
-            periodColor: Colors.grey,
-            period: 'Ultimate Oscillators \n (7,14,28)',
-            value: '-53.6549',
-            type: 'LESS VOLATAILE',
-            typeColor: Colors.grey),
+        Container(
+          height: 140,
+          child: FutureBuilder<Welcome>(
+            future: json,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot
+                        .data!.the15Min.technicalIndicator.tableData.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return RowForExponentialAndOscillators(
+                          periodColor: Colors.grey,
+                          period: snapshot.data!.the15Min.technicalIndicator
+                              .tableData[index].name,
+                          value: snapshot.data!.the15Min.technicalIndicator
+                              .tableData[index].value,
+                          type: snapshot.data!.the15Min.technicalIndicator
+                              .tableData[index].action
+                              .substring(6),
+                          typeColor: Colors.orangeAccent);
+                    });
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              }
+
+              // By default, show a loading spinner.
+              return Text('Loading.....');
+            },
+          ),
+        ),
       ],
     );
   }
