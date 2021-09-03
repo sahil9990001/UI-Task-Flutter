@@ -5,7 +5,9 @@ import 'package:ui_task/rows.dart';
 import 'Modal/technical_modal.dart';
 
 class TableForOscillators extends StatefulWidget {
-  const TableForOscillators({
+  String year;
+  TableForOscillators({
+    required this.year,
     Key? key,
   }) : super(key: key);
 
@@ -72,11 +74,94 @@ class _TableForOscillatorsState extends State<TableForOscillators> {
                           periodColor: Colors.grey,
                           period: snapshot.data!.the15Min.technicalIndicator
                               .tableData[index].name,
-                          value: snapshot.data!.the15Min.technicalIndicator
-                              .tableData[index].value,
-                          type: snapshot.data!.the15Min.technicalIndicator
-                              .tableData[index].action
-                              .substring(6),
+                          value: (widget.year == '15 MIN')
+                              ? snapshot.data!.the15Min.technicalIndicator
+                                  .tableData[index].value
+                              : (widget.year == '1 HR')
+                                  ? snapshot.data!.the5Min.technicalIndicator
+                                      .tableData[index].value
+                                  : (widget.year == '1 MIN')
+                                      ? snapshot
+                                          .data!
+                                          .the1Min
+                                          .technicalIndicator
+                                          .tableData[index]
+                                          .value
+                                      : (widget.year == '30 MIN')
+                                          ? snapshot
+                                              .data!
+                                              .the30Min
+                                              .movingAverages
+                                              .tableData
+                                              .exponential[index]
+                                              .value
+                                          : (widget.year == '5 HR')
+                                              ? snapshot
+                                                  .data!
+                                                  .the5Hour
+                                                  .technicalIndicator
+                                                  .tableData[index]
+                                                  .value
+                                              : (widget.year == '5 MIN')
+                                                  ? snapshot
+                                                      .data!
+                                                      .the5Min
+                                                      .technicalIndicator
+                                                      .tableData[index]
+                                                      .value
+                                                  : (widget.year == 'daily')
+                                                      ? snapshot
+                                                          .data!
+                                                          .daily
+                                                          .technicalIndicator
+                                                          .tableData[index]
+                                                          .value
+                                                      : (widget.year == '1 MON')
+                                                          ? snapshot
+                                                              .data!
+                                                              .monthly
+                                                              .technicalIndicator
+                                                              .tableData[index]
+                                                              .value
+                                                          : snapshot
+                                                              .data!
+                                                              .weekly
+                                                              .technicalIndicator
+                                                              .tableData[index]
+                                                              .value,
+                          type: (widget.year == '15 MIN')
+                              ? snapshot.data!.the15Min.technicalIndicator
+                                  .tableData[index].action
+                                  .substring(6)
+                              : (widget.year == '1 HR')
+                                  ? snapshot.data!.the5Min.technicalIndicator
+                                      .tableData[index].action
+                                      .substring(6)
+                                  : (widget.year == '1 MIN')
+                                      ? snapshot
+                                          .data!
+                                          .the1Min
+                                          .technicalIndicator
+                                          .tableData[index]
+                                          .action
+                                          .substring(6)
+                                      : (widget.year == '30 MIN')
+                                          ? snapshot
+                                              .data!
+                                              .the30Min
+                                              .technicalIndicator
+                                              .tableData[index]
+                                              .action
+                                              .substring(6)
+                                          : (widget.year == '5 HR')
+                                              ? snapshot.data!.the5Hour.technicalIndicator.tableData[index].action.substring(6)
+                                              : (widget.year == '5 MIN')
+                                                  ? snapshot.data!.the5Min.technicalIndicator.tableData[index].action.substring(6)
+                                                  : (widget.year == 'daily')
+                                                      ? snapshot.data!.daily.technicalIndicator.tableData[index].action.substring(6)
+                                                      : (widget.year == '1 MON')
+                                                          ? snapshot.data!.monthly.technicalIndicator.tableData[index].action.substring(6)
+                                                          : snapshot.data!.weekly.technicalIndicator.tableData[index].action.substring(6),
                           typeColor: Colors.orangeAccent);
                     });
               } else if (snapshot.hasError) {

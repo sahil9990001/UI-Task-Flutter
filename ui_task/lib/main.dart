@@ -33,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late Future<Welcome> json;
   // late Welcome welcome;
+  String year = 'the15Min';
 
   @override
   void initState() {
@@ -147,15 +148,84 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Column(
                     children: [
-                      Container2(text: '15 Min', color: Colors.white),
-                      Container2(text: '5 MIN', color: Colors.grey),
-                      Container2(text: '15 MIN', color: Colors.grey),
-                      Container2(text: '30 MIN', color: Colors.grey),
-                      Container2(text: '1 HR', color: Colors.grey),
-                      Container2(text: '5 HR', color: Colors.grey),
-                      Container2(text: '1 DAY', color: Colors.grey),
-                      Container2(text: '1 WK', color: Colors.grey),
-                      Container2(text: '1 MON', color: Colors.grey),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              year = '15 MIN';
+                            });
+                          },
+                          child: Container2(
+                              year: year, text: '15 MIN', color: Colors.grey)),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              year = '1 HR';
+                            });
+                          },
+                          child: Container2(
+                              year: year, text: '1 HR', color: Colors.grey)),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              year = '1 MIN';
+                            });
+                          },
+                          child: Container2(
+                              year: year, text: '1 MIN', color: Colors.grey)),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              year = '30 MIN';
+                            });
+                          },
+                          child: Container2(
+                              year: year, text: '30 MIN', color: Colors.grey)),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              year = '5 HR';
+                            });
+                          },
+                          child: Container2(
+                              year: year, text: '5 HR', color: Colors.grey)),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              year = '5 MIN';
+                            });
+                          },
+                          child: Container2(
+                              year: year, text: '5 MIN', color: Colors.grey)),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              year = '1 Day';
+                            });
+                          },
+                          child: Container2(
+                              year: year,
+                              text: '1 Day',
+                              color: Colors.grey)), //daily
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              year = '1 WK';
+                            });
+                          },
+                          child: Container2(
+                              year: year,
+                              text: '1 WK',
+                              color: Colors.grey)), //weekly
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              year = '1 MON';
+                            });
+                          },
+                          child: Container2(
+                              year: year,
+                              text: '1 MON',
+                              color: Colors.grey)), //monthly
                     ],
                   )
                 ],
@@ -186,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               SizedBox(height: 10),
-              Exponential1(),
+              Exponential1(year: year),
               SizedBox(height: 30),
               FutureBuilder<Welcome>(
                 future: json,
@@ -211,9 +281,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               SizedBox(height: 10),
-              TableForOscillators(),
+              TableForOscillators(year: year),
               SizedBox(height: 20),
-              PivotPoints1(),
+              PivotPoints1(year: year),
               SizedBox(height: 30),
               SizedBox(
                 height: 10,
@@ -239,9 +309,11 @@ class Container1 extends StatelessWidget {
 }
 
 class Container2 extends StatelessWidget {
+  String year;
   String text;
   Color color;
   Container2({
+    required this.year,
     Key? key,
     required this.text,
     required this.color,
@@ -257,12 +329,13 @@ class Container2 extends StatelessWidget {
             padding: EdgeInsets.all(2.0),
             child: Text(
               text,
-              style: TextStyle(fontSize: 9, color: color),
+              style: TextStyle(
+                  fontSize: 9, color: (text == year) ? Colors.white : color),
             ),
           )),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: color)),
+              border: Border.all(color: (text == year) ? Colors.white : color)),
           height: 30,
           width: 50),
     );
